@@ -169,9 +169,6 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectionIndex
 {
-    if (self.mutableSections.count <= sectionIndex) {
-        return 0;
-    }
     return ((RETableViewSection *)[self.mutableSections objectAtIndex:sectionIndex]).items.count;
 }
 
@@ -217,7 +214,8 @@
     if (cell == nil) {
         cell = [[cellClass alloc] initWithStyle:cellStyle reuseIdentifier:cellIdentifier];
 
-        [self.tableView registerClass:cellClass forCellReuseIdentifier:cellIdentifier];
+        /// +m by gsyn77 in 2015-02-28: follow issue - https://github.com/romaonthego/RETableViewManager/issues/197
+        // [self.tableView registerClass:cellClass forCellReuseIdentifier:cellIdentifier];
 
         loadCell(cell);
     }
@@ -261,18 +259,12 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)sectionIndex
 {
-    if (self.mutableSections.count <= sectionIndex) {
-        return nil;
-    }
     RETableViewSection *section = [self.mutableSections objectAtIndex:sectionIndex];
     return section.headerTitle;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)sectionIndex
 {
-    if (self.mutableSections.count <= sectionIndex) {
-        return nil;
-    }
     RETableViewSection *section = [self.mutableSections objectAtIndex:sectionIndex];
     return section.footerTitle;
 }
@@ -292,9 +284,6 @@
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.mutableSections.count <= indexPath.section) {
-        return NO;
-    }
     RETableViewSection *section = [self.mutableSections objectAtIndex:indexPath.section];
     RETableViewItem *item = [section.items objectAtIndex:indexPath.row];
     return item.moveHandler != nil;
@@ -426,9 +415,6 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)sectionIndex
 {
-    if (self.mutableSections.count <= sectionIndex) {
-        return UITableViewAutomaticDimension;
-    }
     RETableViewSection *section = [self.mutableSections objectAtIndex:sectionIndex];
     
     if (section.headerHeight != RETableViewSectionHeaderHeightAutomatic) {
@@ -478,9 +464,6 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)sectionIndex
 {
-    if (self.mutableSections.count <= sectionIndex) {
-        return UITableViewAutomaticDimension;
-    }
     RETableViewSection *section = [self.mutableSections objectAtIndex:sectionIndex];
     
     if (section.footerHeight != RETableViewSectionFooterHeightAutomatic) {
@@ -532,17 +515,16 @@
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.mutableSections.count <= indexPath.section) {
-        return UITableViewAutomaticDimension;
-    }
     RETableViewSection *section = [self.mutableSections objectAtIndex:indexPath.section];
 
     id item = [section.items objectAtIndex:indexPath.row];
     
     // Forward to UITableView delegate
     //
-    if ([self.delegate conformsToProtocol:@protocol(UITableViewDelegate)] && [self.delegate respondsToSelector:@selector(tableView:estimatedHeightForRowAtIndexPath:)])
-        return [self.delegate tableView:tableView estimatedHeightForRowAtIndexPath:indexPath];
+    IF_IOS7_OR_GREATER (
+        if ([self.delegate conformsToProtocol:@protocol(UITableViewDelegate)] && [self.delegate respondsToSelector:@selector(tableView:estimatedHeightForRowAtIndexPath:)])
+            return [self.delegate tableView:tableView estimatedHeightForRowAtIndexPath:indexPath];
+    );
     
     CGFloat height = [[self classForCellAtIndexPath:indexPath] heightWithItem:item tableViewManager:self];
 
@@ -553,9 +535,6 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)sectionIndex
 {
-    if (self.mutableSections.count <= sectionIndex) {
-        return nil;
-    }
     RETableViewSection *section = [self.mutableSections objectAtIndex:sectionIndex];
     
     // Forward to UITableView delegate
@@ -568,9 +547,6 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)sectionIndex
 {
-    if (self.mutableSections.count <= sectionIndex) {
-        return nil;
-    }
     RETableViewSection *section = [self.mutableSections objectAtIndex:sectionIndex];
     
     // Forward to UITableView delegate

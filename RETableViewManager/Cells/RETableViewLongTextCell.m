@@ -94,7 +94,7 @@
     self.textView.text = self.item.value;
     self.textView.placeholder = self.item.placeholder;
     self.textView.placeholderColor = self.item.placeholderColor;
-    self.textView.font = [UIFont systemFontOfSize:17];
+    self.textView.font = [UIFont systemFontOfSize:[UIFont systemFontSize]]; // +m by gsyn77 in 2015-02-28: should we use default font size? -> [UIFont systemFontOfSize:17];;
     self.textView.autocapitalizationType = self.item.autocapitalizationType;
     self.textView.autocorrectionType = self.item.autocorrectionType;
     self.textView.spellCheckingType = self.item.spellCheckingType;

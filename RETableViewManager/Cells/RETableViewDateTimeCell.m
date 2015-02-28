@@ -68,16 +68,16 @@
     [self addSubview:self.textField];
     
     self.dateLabel = [[UILabel alloc] initWithFrame:CGRectNull];
-    self.dateLabel.font = [UIFont systemFontOfSize:17];
+    self.dateLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]]; // +m by gsyn77 in 2015-02-28: should we use default font size? -> [UIFont systemFontOfSize:17];;
     self.dateLabel.backgroundColor = [UIColor clearColor];
-    self.dateLabel.textColor = [[self class] detailTextLabelColor];
+    self.dateLabel.textColor = self.detailTextLabel.textColor;
     self.dateLabel.highlightedTextColor = [UIColor whiteColor];
     self.dateLabel.textAlignment = NSTextAlignmentRight;
     self.dateLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [self.contentView addSubview:self.dateLabel];
     
     self.placeholderLabel = [[UILabel alloc] initWithFrame:CGRectNull];
-    self.placeholderLabel.font = [UIFont systemFontOfSize:17];
+    self.placeholderLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]]; // +m by gsyn77 in 2015-02-28: should we use default font size? -> [UIFont systemFontOfSize:17];;
     self.placeholderLabel.backgroundColor = [UIColor clearColor];
     self.placeholderLabel.textColor = [UIColor lightGrayColor];
     self.placeholderLabel.highlightedTextColor = [UIColor whiteColor];
@@ -91,6 +91,7 @@
 
 - (void)cellWillAppear
 {
+    self.textLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]]; // +m by gsyn77 in 2015-02-28
     self.textLabel.text = self.item.title.length == 0 ? @" " : self.item.title;
     self.textField.inputView = self.datePicker;
     self.datePicker.date = self.item.value ? self.item.value : (self.item.pickerStartDate ? self.item.pickerStartDate : [NSDate date]);
@@ -113,9 +114,9 @@
         self.dateLabel.textAlignment = NSTextAlignmentLeft;
     }
     
-    if ([self respondsToSelector:@selector(tintColor)]) {
-        self.dateLabel.textColor = self.item.inlinePickerItem ? [self tintColor] : [[self class] detailTextLabelColor];
-    }
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
+    self.dateLabel.textColor = self.item.inlinePickerItem ? [self performSelector:@selector(tintColor) withObject:nil] : self.detailTextLabel.textColor;
+#endif
 
     self.enabled = self.item.enabled;
 }
@@ -144,9 +145,9 @@
     if (selected && self.item.inlineDatePicker && !self.item.inlinePickerItem) {
         [self setSelected:NO animated:NO];
         [self.item deselectRowAnimated:NO];
-        if ([self respondsToSelector:@selector(tintColor)]) {
-            self.dateLabel.textColor = [self tintColor];
-        }
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
+        self.dateLabel.textColor = [self performSelector:@selector(tintColor) withObject:nil];
+#endif
         self.item.inlinePickerItem = [REInlineDatePickerItem itemWithDateTimeItem:self.item];
         [self.section insertItem:self.item.inlinePickerItem atIndex:self.item.indexPath.row + 1];
         [self.tableViewManager.tableView insertRowsAtIndexPaths:@[self.item.inlinePickerItem.indexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -154,18 +155,13 @@
         if (selected && self.item.inlineDatePicker && self.item.inlinePickerItem) {
             [self setSelected:NO animated:NO];
             [self.item deselectRowAnimated:NO];
-            self.dateLabel.textColor = [[self class] detailTextLabelColor];
+            self.dateLabel.textColor = self.detailTextLabel.textColor;
             NSIndexPath *indexPath = [self.item.inlinePickerItem.indexPath copy];
             [self.section removeItemAtIndex:self.item.inlinePickerItem.indexPath.row];
             self.item.inlinePickerItem = nil;
             [self.tableViewManager.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         }
     }
-}
-
-//! HACK
-+ (UIColor *)detailTextLabelColor {
-    return [UIColor colorWithRed:0.556863 green:0.556863 blue:0.576471 alpha:1];
 }
 
 - (UIResponder *)responder

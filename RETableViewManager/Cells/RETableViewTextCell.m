@@ -80,7 +80,7 @@
     self.textLabel.text = self.item.title.length == 0 ? @" " : self.item.title;
     self.textField.text = self.item.value;
     self.textField.placeholder = self.item.placeholder;
-    self.textField.font = [UIFont systemFontOfSize:17];
+    self.textField.font = [UIFont systemFontOfSize:[UIFont systemFontSize]]; // +m by gsyn77 in 2015-02-28: should we use default font size? -> [UIFont systemFontOfSize:17];
     self.textField.autocapitalizationType = self.item.autocapitalizationType;
     self.textField.autocorrectionType = self.item.autocorrectionType;
     self.textField.spellCheckingType = self.item.spellCheckingType;
@@ -196,17 +196,15 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    BOOL shouldChange = YES;
+    if (self.item.onChangeCharacterInRange)
+        self.item.onChangeCharacterInRange(self.item, range, string);
     
     if (self.item.charactersLimit) {
         NSUInteger newLength = textField.text.length + string.length - range.length;
-        shouldChange = newLength <= self.item.charactersLimit;
+        return newLength <= self.item.charactersLimit;
     }
     
-    if (self.item.onChangeCharacterInRange && shouldChange)
-        shouldChange = self.item.onChangeCharacterInRange(self.item, range, string);
-    
-    return shouldChange;
+    return YES;
 }
 
 

@@ -68,7 +68,7 @@
     [self addSubview:self.textField];
     
     self.valueLabel = [[UILabel alloc] initWithFrame:CGRectNull];
-    self.valueLabel.font = [UIFont systemFontOfSize:17];
+    self.valueLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]]; // +m by gsyn77 in 2015-02-28: should we use default font size? -> [UIFont systemFontOfSize:17];;
     self.valueLabel.backgroundColor = [UIColor clearColor];
     self.valueLabel.textColor = self.detailTextLabel.textColor;
     self.valueLabel.highlightedTextColor = [UIColor whiteColor];
@@ -77,7 +77,7 @@
     [self.contentView addSubview:self.valueLabel];
     
     self.placeholderLabel = [[UILabel alloc] initWithFrame:CGRectNull];
-    self.placeholderLabel.font = [UIFont systemFontOfSize:17];
+    self.placeholderLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]]; // +m by gsyn77 in 2015-02-28: should we use default font size? -> [UIFont systemFontOfSize:17];;
     self.placeholderLabel.backgroundColor = [UIColor clearColor];
     self.placeholderLabel.textColor = [UIColor lightGrayColor];
     self.placeholderLabel.highlightedTextColor = [UIColor whiteColor];
@@ -90,6 +90,7 @@
 
 - (void)cellWillAppear
 {
+    self.textLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]]; // +m by gsyn77 in 2015-02-28
     self.textLabel.text = self.item.title.length == 0 ? @" " : self.item.title;
     self.textField.inputView = self.pickerView;
     

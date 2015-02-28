@@ -75,7 +75,7 @@
     self.textField.text = [self.item.value re_stringWithNumberFormat:self.item.format];
     self.textField.placeholder = self.item.placeholder;
     self.textField.format = self.item.format;
-    self.textField.font = [UIFont systemFontOfSize:17];
+    self.textField.font = [UIFont systemFontOfSize:[UIFont systemFontSize]]; // +m by gsyn77 in 2015-02-28: should we use default font size? -> [UIFont systemFontOfSize:17];;
     self.textField.keyboardAppearance = self.item.keyboardAppearance;
     self.textField.keyboardType = UIKeyboardTypeNumberPad;
     

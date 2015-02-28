@@ -54,7 +54,7 @@
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     self.valueLabel = [[UILabel alloc] initWithFrame:CGRectNull];
-    self.valueLabel.font = [UIFont systemFontOfSize:17];
+    self.valueLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]]; // +m by gsyn77 in 2015-02-28: should we use default font size? -> [UIFont systemFontOfSize:17];;
     self.valueLabel.backgroundColor = [UIColor clearColor];
     self.valueLabel.textColor = self.detailTextLabel.textColor;
     self.valueLabel.highlightedTextColor = [UIColor whiteColor];
@@ -66,6 +66,7 @@
 {
     //[super cellWillAppear];
     self.accessoryType = self.item.accessoryType;
+    self.textLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]]; // +m by gsyn77 in 2015-02-28
     self.textLabel.backgroundColor = [UIColor clearColor];
     self.textLabel.text = self.item.title.length == 0 ? @" " : self.item.title;
     self.detailTextLabel.text = @"";

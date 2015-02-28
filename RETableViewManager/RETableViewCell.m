@@ -45,10 +45,10 @@
 {
     if ([item isKindOfClass:[RETableViewItem class]] && item.cellHeight > 0)
         return item.cellHeight;
-    
+
     if ([item isKindOfClass:[RETableViewItem class]] && item.cellHeight == 0)
         return item.section.style.cellHeight;
-    
+
     return tableViewManager.style.cellHeight;
 }
 
@@ -81,11 +81,11 @@
     self.loaded = YES;
     self.actionBar = [[REActionBar alloc] initWithDelegate:self];
     self.selectionStyle = self.tableViewManager.style.defaultCellSelectionStyle;
-    
+
     if ([self.tableViewManager.style hasCustomBackgroundImage]) {
         [self addBackgroundImage];
     }
-    
+
     if ([self.tableViewManager.style hasCustomSelectedBackgroundImage]) {
         [self addSelectedBackgroundImage];
     }
@@ -95,7 +95,9 @@
 {
     [self updateActionBarNavigationControl];
     self.selectionStyle = self.section.style.defaultCellSelectionStyle;
-    
+
+    self.textLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]]; // +m by gsyn77 in 2015-02-28
+
     if ([self.item isKindOfClass:[NSString class]]) {
         self.textLabel.text = (NSString *)self.item;
         self.textLabel.backgroundColor = [UIColor clearColor];
@@ -124,14 +126,14 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
+
     // Set content frame
     //
     CGRect contentFrame = self.contentView.frame;
     contentFrame.origin.x = contentFrame.origin.x + self.section.style.contentViewMargin;
     contentFrame.size.width = contentFrame.size.width - self.section.style.contentViewMargin * 2;
     self.contentView.frame = contentFrame;
-    
+
     // iOS 7 textLabel margin fix
     //
     if (self.section.style.contentViewMargin > 0) {
@@ -142,7 +144,7 @@
             self.textLabel.frame = CGRectMake(self.section.style.contentViewMargin, self.textLabel.frame.origin.y, self.textLabel.frame.size.width, self.textLabel.frame.size.height);
         }
     }
-    
+
     if ([self.section.style hasCustomBackgroundImage]) {
         self.backgroundColor = [UIColor clearColor];
         if (!self.backgroundImageView) {
@@ -150,14 +152,14 @@
         }
         self.backgroundImageView.image = [self.section.style backgroundImageForCellType:self.type];
     }
-    
+
     if ([self.section.style hasCustomSelectedBackgroundImage]) {
         if (!self.selectedBackgroundImageView) {
             [self addSelectedBackgroundImage];
         }
         self.selectedBackgroundImageView.image = [self.section.style selectedBackgroundImageForCellType:self.type];
     }
-    
+
     // Set background frame
     //
     CGRect backgroundFrame = self.backgroundImageView.frame;
@@ -172,12 +174,12 @@
 {
     CGFloat cellOffset = 10.0;
     CGFloat fieldOffset = 10.0;
-    
+
     if (REUIKitIsFlatMode() && self.section.style.contentViewMargin <= 0)
         cellOffset += 5.0;
-    
+
     UIFont *font = self.textLabel.font;
-    
+
     CGRect frame = CGRectMake(0, self.textLabel.frame.origin.y, 0, self.textLabel.frame.size.height);
     if (self.item.title.length > 0) {
         frame.origin.x = [self.section maximumTitleWidthWithFont:font] + cellOffset + fieldOffset;
@@ -190,7 +192,7 @@
         frame.origin.x = frame.origin.x - diff;
         frame.size.width = minimumWidth;
     }
-    
+
     view.frame = frame;
 }
 
@@ -198,16 +200,16 @@
 {
     if (self.rowIndex == 0 && self.section.items.count == 1)
         return RETableViewCellTypeSingle;
-    
+
     if (self.rowIndex == 0 && self.section.items.count > 1)
         return RETableViewCellTypeFirst;
-    
+
     if (self.rowIndex > 0 && self.rowIndex < self.section.items.count - 1 && self.section.items.count > 2)
         return RETableViewCellTypeMiddle;
-    
+
     if (self.rowIndex == self.section.items.count - 1 && self.section.items.count > 1)
         return RETableViewCellTypeLast;
-    
+
     return RETableViewCellTypeAny;
 }
 
@@ -269,7 +271,7 @@
         if (indexPath)
             return indexPath;
     }
-    
+
     return nil;
 }
 
